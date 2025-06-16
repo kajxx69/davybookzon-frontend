@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Book, Users, Star, ArrowRight, BookOpen, Shield, Zap } from 'lucide-react';
 import BookCard from '../components/UI/BookCard';
 import PurchaseModal from '../components/UI/PurchaseModal';
 import { Book as BookType } from '../types';
 import { bookService } from '../services/bookService';
+import { useAuth } from '../context/AuthContext';
 
 const Home: React.FC = () => {
   const [selectedBook, setSelectedBook] = useState<BookType | null>(null);
@@ -12,6 +13,7 @@ const Home: React.FC = () => {
   const [featuredBooks, setFeaturedBooks] = useState<BookType[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchFeaturedBooks = async () => {
@@ -77,8 +79,11 @@ const Home: React.FC = () => {
               </div>
             </div>
             <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
-              Découvrez votre prochaine
-              <span className="block text-blue-200">lecture numérique</span>
+              {user ? (
+                  <>Bienvenue, <span className="block text-blue-200">{user.firstName} !</span></>
+                ) : (
+                  <>Découvrez votre prochaine<span className="block text-blue-200">lecture numérique</span></>
+              )}
             </h1>
             <p className="text-xl md:text-2xl text-blue-100 mb-8 max-w-3xl mx-auto">
               DavyBookZone vous propose une sélection exclusive de livres PDF d'auteurs indépendants. 
@@ -92,12 +97,14 @@ const Home: React.FC = () => {
                 <span>Parcourir les livres</span>
                 <ArrowRight className="h-5 w-5" />
               </Link>
-              <Link
-                to="/register"
-                className="border-2 border-white text-white hover:bg-white hover:text-blue-600 px-8 py-4 rounded-lg font-semibold text-lg transition-colors inline-flex items-center justify-center"
-              >
-                Créer un compte
-              </Link>
+              {!user && (
+                <Link
+                  to="/register"
+                  className="border-2 border-white text-white hover:bg-white hover:text-blue-600 px-8 py-4 rounded-lg font-semibold text-lg transition-colors inline-flex items-center justify-center"
+                >
+                  Créer un compte
+                </Link>
+              )}
             </div>
           </div>
         </div>
