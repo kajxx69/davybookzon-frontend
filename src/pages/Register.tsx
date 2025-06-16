@@ -205,7 +205,7 @@ const Register: React.FC = () => {
                   value={formData.password}
                   onChange={handleChange}
                   className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                  placeholder="Mot de passe (min. 6 caractères)"
+                  placeholder="Le mot de passe doit contenir au moins 6 caractères, une majuscule, une minuscule et un chiffre !"
                 />
                 <button
                   type="button"
