@@ -248,6 +248,7 @@ const Register: React.FC = () => {
           {/* Footer */}
           <div className="mt-8 text-center">
             <p className="text-gray-600">
+              Le mot de passe doit contenir au moins 6 caractères, une majuscule, une minuscule et un chiffre !
               Vous avez déjà un compte ?{' '}
               <Link
                 to="/login"
