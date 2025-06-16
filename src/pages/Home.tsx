@@ -216,13 +216,14 @@ const Home: React.FC = () => {
           <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
             Rejoignez notre communauté de lecteurs passionnés et découvrez des pépites littéraires.
           </p>
-          <Link
-            to="/register"
-            className="bg-white text-blue-600 hover:bg-blue-50 px-8 py-4 rounded-lg font-semibold text-lg transition-colors inline-flex items-center space-x-2"
-          >
-            <span>Créer mon compte gratuitement</span>
-            <ArrowRight className="h-5 w-5" />
-          </Link>
+          {!user && (
+                <Link
+                  to="/register"
+                  className="border-2 border-white text-white hover:bg-white hover:text-blue-600 px-8 py-4 rounded-lg font-semibold text-lg transition-colors inline-flex items-center justify-center"
+                >
+                  Créer un compte
+                </Link>
+              )}
         </div>
       </section>
 
