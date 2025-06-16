@@ -19,6 +19,7 @@ const Navigation: React.FC = () => {
         <div className="flex justify-between h-16">
           <div className="flex">
             <Link to="/" className="flex items-center">
+              <Book className="h-6 w-6 text-blue-600 mr-2" />
               <span className="text-2xl font-bold text-blue-600">DavyBookZone</span>
             </Link>
           </div>
