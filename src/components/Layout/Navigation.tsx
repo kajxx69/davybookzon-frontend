@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Menu, X, User, Book, MessageCircle, LogOut } from 'lucide-react';
+import { Menu, X, User, Book, MessageCircle, LogOut, ShoppingBag } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 const Navigation: React.FC = () => {
@@ -28,36 +28,45 @@ const Navigation: React.FC = () => {
           <div className="hidden md:flex md:items-center md:space-x-4">
             <Link
               to="/books"
-              className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+              className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
             >
               Livres
             </Link>
             <Link
               to="/contact"
-              className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+              className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
             >
               Contact
             </Link>
             {user ? (
               <>
                 <Link
-                  to="/profile"
-                  className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                  to="/purchases"
+                  className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center"
                 >
+                  <ShoppingBag className="h-5 w-5 mr-1" />
+                  Mes achats
+                </Link>
+                <Link
+                  to="/profile"
+                  className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center"
+                >
+                  <User className="h-5 w-5 mr-1" />
                   Profil
                 </Link>
                 {user.role === 'admin' && (
                   <Link
                     to="/admin"
-                    className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                    className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
                   >
-                    Admin
+                    Administration
                   </Link>
                 )}
                 <button
                   onClick={handleLogout}
-                  className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                  className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium flex items-center"
                 >
+                  <LogOut className="h-5 w-5 mr-1" />
                   Déconnexion
                 </button>
               </>
@@ -65,13 +74,13 @@ const Navigation: React.FC = () => {
               <>
                 <Link
                   to="/login"
-                  className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                  className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
                 >
                   Connexion
                 </Link>
                 <Link
                   to="/register"
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+                  className="bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-md text-sm font-medium"
                 >
                   Inscription
                 </Link>
@@ -83,7 +92,7 @@ const Navigation: React.FC = () => {
           <div className="md:hidden flex items-center">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-gray-700 hover:text-blue-600 focus:outline-none"
+              className="text-gray-600 hover:text-gray-900 focus:outline-none"
             >
               {isMenuOpen ? (
                 <X className="h-6 w-6" />
@@ -95,31 +104,37 @@ const Navigation: React.FC = () => {
         </div>
       </div>
 
-      {/* Mobile Navigation */}
+      {/* Mobile menu */}
       {isMenuOpen && (
         <div className="md:hidden">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             <Link
               to="/books"
-              className="flex items-center text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-base font-medium transition-colors"
+              className="text-gray-600 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium"
               onClick={() => setIsMenuOpen(false)}
             >
-              <Book className="h-5 w-5 mr-2" />
               Livres
             </Link>
             <Link
               to="/contact"
-              className="flex items-center text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-base font-medium transition-colors"
+              className="text-gray-600 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium"
               onClick={() => setIsMenuOpen(false)}
             >
-              <MessageCircle className="h-5 w-5 mr-2" />
               Contact
             </Link>
             {user ? (
               <>
                 <Link
+                  to="/purchases"
+                  className="text-gray-600 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium flex items-center"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <ShoppingBag className="h-5 w-5 mr-2" />
+                  Mes achats
+                </Link>
+                <Link
                   to="/profile"
-                  className="flex items-center text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-base font-medium transition-colors"
+                  className="text-gray-600 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium flex items-center"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <User className="h-5 w-5 mr-2" />
@@ -128,10 +143,10 @@ const Navigation: React.FC = () => {
                 {user.role === 'admin' && (
                   <Link
                     to="/admin"
-                    className="flex items-center text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-base font-medium transition-colors"
+                    className="text-gray-600 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium"
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    Admin
+                    Administration
                   </Link>
                 )}
                 <button
@@ -139,7 +154,7 @@ const Navigation: React.FC = () => {
                     handleLogout();
                     setIsMenuOpen(false);
                   }}
-                  className="flex items-center w-full text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-base font-medium transition-colors"
+                  className="text-gray-600 hover:text-gray-900 block w-full text-left px-3 py-2 rounded-md text-base font-medium flex items-center"
                 >
                   <LogOut className="h-5 w-5 mr-2" />
                   Déconnexion
@@ -149,14 +164,14 @@ const Navigation: React.FC = () => {
               <>
                 <Link
                   to="/login"
-                  className="flex items-center text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-base font-medium transition-colors"
+                  className="text-gray-600 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Connexion
                 </Link>
                 <Link
                   to="/register"
-                  className="flex items-center bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-md text-base font-medium transition-colors"
+                  className="bg-blue-600 text-white hover:bg-blue-700 block px-3 py-2 rounded-md text-base font-medium"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Inscription

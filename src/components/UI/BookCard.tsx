@@ -1,13 +1,19 @@
 import React from 'react';
 import { ShoppingCart, User, Tag } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { Book } from '../../types';
 
 interface BookCardProps {
   book: Book;
-  onPurchase: (book: Book) => void;
 }
 
-const BookCard: React.FC<BookCardProps> = ({ book, onPurchase }) => {
+const BookCard: React.FC<BookCardProps> = ({ book }) => {
+  const navigate = useNavigate();
+
+  const handlePurchase = () => {
+    navigate(`/purchase/${book._id}`);
+  };
+
   return (
     <div className="bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group">
       <div className="aspect-w-3 aspect-h-4 overflow-hidden">
@@ -43,7 +49,7 @@ const BookCard: React.FC<BookCardProps> = ({ book, onPurchase }) => {
           </div>
           
           <button
-            onClick={() => onPurchase(book)}
+            onClick={handlePurchase}
             className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg flex items-center space-x-2 transition-colors duration-200 transform hover:scale-105"
           >
             <ShoppingCart className="h-4 w-4" />

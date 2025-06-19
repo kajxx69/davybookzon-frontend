@@ -4,13 +4,14 @@ import { bookService } from '../../services/bookService';
 import { authService } from '../../services/authService';
 import { messageService } from '../../services/messageService';
 import { adminService } from '../../services/adminService';
-import { User, Book as BookType, Message, BookFormData, CreateUserData } from '../../types';
+import { User, Book as BookType, Message, BookFormData, CreateUserData, PurchaseDetails } from '../../types';
 
 const AdminDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [users, setUsers] = useState<User[]>([]);
   const [books, setBooks] = useState<BookType[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
+  const [purchases, setPurchases] = useState<PurchaseDetails[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [stats, setStats] = useState<any>(null);
@@ -60,12 +61,13 @@ const AdminDashboard: React.FC = () => {
       setLoading(true);
       setError(null);
       
-      const [statsResponse, usersResponse, booksResponse, messagesResponse, settingsResponse] = await Promise.all([
+      const [statsResponse, usersResponse, booksResponse, messagesResponse, settingsResponse, purchasesResponse] = await Promise.all([
         adminService.getDashboardStats(),
-        adminService.getUsers(),
+        adminService.getUsers({ limit: 1000 }),
         adminService.getBooks(),
         adminService.getMessages(),
-        adminService.getSettings()
+        adminService.getSettings(),
+        adminService.getPurchases()
       ]);
 
       if (statsResponse.success) setStats(statsResponse.data.data);
@@ -73,11 +75,13 @@ const AdminDashboard: React.FC = () => {
       if (booksResponse.success) setBooks(booksResponse.data.data);
       if (messagesResponse.success) setMessages(messagesResponse.data.data);
       if (settingsResponse.success) setSettings(settingsResponse.data.data);
+      if (purchasesResponse.success) setPurchases(purchasesResponse.data.data);
     } catch (error) {
       setError('Erreur lors du chargement des données');
       setUsers([]);
       setBooks([]);
       setMessages([]);
+      setPurchases([]);
     } finally {
       setLoading(false);
     }
@@ -91,6 +95,7 @@ const AdminDashboard: React.FC = () => {
     { id: 'overview', label: 'Vue d\'ensemble', icon: BarChart3 },
     { id: 'users', label: 'Utilisateurs', icon: Users },
     { id: 'books', label: 'Livres', icon: Book },
+    { id: 'purchases', label: 'Achats', icon: BarChart3 },
     { id: 'messages', label: 'Messages', icon: MessageSquare },
     { id: 'settings', label: 'Paramètres', icon: Settings },
   ];
@@ -196,9 +201,9 @@ const AdminDashboard: React.FC = () => {
             {stats?.popularBooks?.map((book: BookType) => (
               <div key={book._id} className="flex items-center space-x-3">
                 <img
-                  src={book.coverImage}
+                  src={typeof book.coverImage === 'string' ? book.coverImage : book.coverImage?.url || ''}
                   alt={book.title}
-                  className="h-10 h-12 object-cover rounded"
+                  className="h-10 w-12 object-cover rounded"
                 />
                 <div className="flex-1">
                   <p className="text-sm font-medium text-gray-900 line-clamp-1">
@@ -858,9 +863,9 @@ const AdminDashboard: React.FC = () => {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       <img
-                        src={book.coverImage?.url || ''}
+                        src={typeof book.coverImage === 'string' ? book.coverImage : book.coverImage?.url || ''}
                         alt={book.title}
-                        className="h-16 w-12 object-cover rounded"
+                        className="h-10 w-12 object-cover rounded"
                       />
                       <div className="ml-4">
                         <div className="text-sm font-medium text-gray-900">
@@ -908,6 +913,50 @@ const AdminDashboard: React.FC = () => {
             </tbody>
           </table>
         </div>
+      </div>
+    </div>
+  );
+
+  const renderPurchases = () => (
+    <div className="space-y-6">
+      <h3 className="text-lg font-semibold text-gray-900">Liste des achats</h3>
+      <div className="bg-white rounded-lg shadow-md overflow-x-auto">
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Utilisateur</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Livre</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Prix</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Transaction</th>
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {purchases.map((purchase) => (
+              <tr key={purchase._id} className="hover:bg-gray-50">
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="text-sm font-medium text-gray-900">{purchase.user_id?.firstName} {purchase.user_id?.lastName}</div>
+                  <div className="text-xs text-gray-500">{purchase.user_id?.email}</div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="text-sm font-medium text-gray-900">{purchase.book_id?.title}</div>
+                  <div className="text-xs text-gray-500">{purchase.book_id?.author}</div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{purchase.price?.toLocaleString()} FCFA</td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                    purchase.status === 'completed' ? 'bg-green-100 text-green-800' : purchase.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'
+                  }`}>
+                    {purchase.status}
+                  </span>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-xs text-gray-500">{new Date(purchase.purchased_at).toLocaleString('fr-FR')}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-xs text-gray-500">{purchase.transaction_id}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );
@@ -1183,6 +1232,8 @@ const AdminDashboard: React.FC = () => {
         return renderUsers();
       case 'books':
         return renderBooks();
+      case 'purchases':
+        return renderPurchases();
       case 'messages':
         return renderMessages();
       case 'settings':

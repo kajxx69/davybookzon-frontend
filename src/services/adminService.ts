@@ -14,9 +14,9 @@ export const adminService = {
   },
 
   // Utilisateurs
-  getUsers: async () => {
+  getUsers: async (params = { limit: 1000 }) => {
     try {
-      const response = await api.get('/admin/users');
+      const response = await api.get('/admin/users', { params });
       return { success: true, data: response.data };
     } catch (error) {
       console.error('Error fetching users:', error);
@@ -191,6 +191,17 @@ export const adminService = {
         success: false, 
         error: error.response?.data?.message || 'Erreur lors du changement de statut'
       };
+    }
+  },
+
+  // Achats
+  getPurchases: async () => {
+    try {
+      const response = await api.get('/admin/purchases');
+      return { success: true, data: response.data };
+    } catch (error) {
+      console.error('Error fetching purchases:', error);
+      return { success: false, error };
     }
   }
 }; 

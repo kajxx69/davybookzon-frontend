@@ -13,6 +13,9 @@ import Register from './pages/Register';
 import Profile from './pages/Profile';
 import Contact from './pages/Contact';
 import AdminDashboard from './pages/Admin/AdminDashboard';
+import PurchasePage from './pages/PurchasePage';
+import PurchaseHistory from './pages/PurchaseHistory';
+import DownloadPage from './pages/DownloadPage';
 
 function App() {
   return (
@@ -27,11 +30,21 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/purchase/:bookId" element={<PurchasePage />} />
+              <Route path="/purchase/verify/:transactionId" element={<DownloadPage />} />
               <Route 
                 path="/profile" 
                 element={
                   <ProtectedRoute>
                     <Profile />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/purchases" 
+                element={
+                  <ProtectedRoute>
+                    <PurchaseHistory />
                   </ProtectedRoute>
                 } 
               />
